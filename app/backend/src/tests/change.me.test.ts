@@ -4,7 +4,6 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 
 import App from '../app';
-import Example from '../database/models/ExampleModel';
 
 import { Response } from 'superagent';
 
@@ -23,14 +22,14 @@ describe('Seu teste', () => {
 
   // before(async () => {
   //   sinon
-  //     .stub(Example, "findOne")
+  //     .stub(Login, "findOne")
   //     .resolves({
   //       ...<Seu mock>
-  //     } as Example);
+  //     } as Login);
   // });
 
   // after(()=>{
-  //   (Example.findOne as sinon.SinonStub).restore();
+  //   (Login.findOne as sinon.SinonStub).restore();
   // })
 
   // it('...', async () => {
