@@ -1,8 +1,15 @@
 import * as jwt from 'jsonwebtoken';
-import { ILogin } from '../interfaces';
 
 export default class JWT {
-  static generateToken(login: ILogin): string {
-    return jwt.sign(login, process.env.JWT_SECRET as string);
+  static generateToken(email: string) {
+    return jwt.sign(email, process.env.JWT_SECRET as string);
+  }
+
+  static validateToken(authorization: string) {
+    try {
+      return jwt.verify(authorization, process.env.JWT_SECRET as string) as jwt.JwtPayload;
+    } catch (error) {
+      throw new Error('Expired or invalid token');
+    }
   }
 }

@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import FieldsValidation from '../middlewares/validateLogin';
 import LoginController from '../Controllers/loginController';
 
-const routerLogin = Router();
+const loginRoutes = Router();
 
-routerLogin.post('/', FieldsValidation.validateLogin, LoginController.login);
+loginRoutes.post('/', LoginController.login);
+loginRoutes.get('/validate', LoginController.loginValidate);
 
-export default routerLogin;
+export default loginRoutes;
