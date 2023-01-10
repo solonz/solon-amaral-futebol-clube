@@ -6,6 +6,7 @@ import chaiHttp = require('chai-http');
 import App from '../app';
 import { Response } from 'superagent';
 import { token, registeredUser, unregisteredUser } from '../tests/mocks/login'
+import User from '../database/models/usersModel';
 
 chai.use(chaiHttp);
 
@@ -48,6 +49,16 @@ describe('testes na página de Login', () => {
     expect(response.status).to.be.equal(200)
   })
 
+  it("valida o token", async () => {
+    const { email, password } = registeredUser;
+    const response = await chai.request(app).post('/login').send({ email, password });
+    const validate = await chai.request(app).get('/login/validate').set('authorization', token)
+    expect(response.status).to.be.equal(200)
+    expect(validate.status).to.be.equal(200)
+    expect(validate.body).to.be.deep.equal({role: 'admin'})
+  });
+  })
+
   /**
    * Exemplo do uso de stubs com tipos
    */
@@ -77,4 +88,3 @@ describe('testes na página de Login', () => {
 //     expect(false).to.be.eq(true);
 //   });
 // });
-})
