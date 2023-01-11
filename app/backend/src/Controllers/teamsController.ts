@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import httpStatus from '../handlers/httpStatus';
+import TeamsService from '../Services/teamsService';
 import Team from '../database/models/teamsModel';
 
 export default class TeamsController {
@@ -8,6 +10,12 @@ export default class TeamsController {
     const allTeams = await Team.findAll();
     console.log(allTeams);
 
-    return res.status(200).json(allTeams);
+    return res.status(httpStatus.success).json(allTeams);
+  }
+
+  static async getTeam(req: Request, res: Response) {
+    const { id } = req.params;
+    const teamByPk = await TeamsService.team(id);
+    res.status(httpStatus.success).json(teamByPk);
   }
 }
