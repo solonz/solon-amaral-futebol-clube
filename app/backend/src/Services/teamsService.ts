@@ -1,4 +1,4 @@
-import Team from '../database/models/teamsModel';
+import Team from '../database/models/matchesModel';
 
 export default class TeamsService {
   static async team(id: string) {
