@@ -18,11 +18,26 @@ export default class MatchesService {
   }
 
   static async insertMatch(body: INewMatch) {
+    const { homeTeam, awayTeam } = body;
+
+    const findHomeTeam = await Team.findOne({ where: { id: homeTeam } });
+    const findAwayTeam = await Team.findOne({ where: { id: awayTeam } });
+    console.log(findAwayTeam);
+
+    if (!findHomeTeam || !findAwayTeam) {
+      return {
+        status: 404,
+        message: 'There is no team with such id!',
+      };
+    }
     const newMatch = await Match.create({ ...body, inProgress: 'true' });
 
     const createdMatch = await this.findMatchByPk(newMatch.id);
 
-    return createdMatch;
+    return {
+      status: 200,
+      message: createdMatch,
+    };
   }
 
   static async findMatchByPk(id: number) {

@@ -13,8 +13,13 @@ export default class matchesController {
 
   static async createMatch(req: Request, res: Response) {
     const matchData = req.body;
+    const { homeTeam, awayTeam } = matchData;
+    if (homeTeam === awayTeam) {
+      return res.status(httpStatus.notFound)
+        .json({ message: 'It is not possible to create a match with two equal teams' });
+    }
     const createdMatch = await MatchesService.insertMatch(matchData);
-    return res.status(httpStatus.created).json(createdMatch);
+    return res.status(createdMatch.status).json({ message: createdMatch.message });
   }
 
   static async finishMatch(req: Request, res: Response) {

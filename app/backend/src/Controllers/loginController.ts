@@ -22,7 +22,7 @@ export default class LoginController {
     const { authorization } = req.headers;
 
     if (!authorization) {
-      return res.status(httpStatus.unauthorized).json({ message: 'Invalid token xxxx' });
+      return res.status(httpStatus.unauthorized).json({ message: 'Missing Authorization' });
     }
 
     const result = await LoginService.validateToken(authorization as string);
