@@ -8,6 +8,10 @@ export default class MatchesService {
       { model: Team, attributes: ['teamName'], as: 'teamHome' },
       { model: Team, attributes: ['teamName'], as: 'teamAway' },
     ];
+    if (!inProgress) {
+      const allMatches = await Match.findAll({ include: teams });
+      return allMatches;
+    }
     if (inProgress === 'true') {
       const inProgressMatches = await Match
         .findAll({ include: teams, where: { inProgress: inProgress === 'true' } });
@@ -20,8 +24,6 @@ export default class MatchesService {
 
       return notInProgressMatches;
     }
-    const allMatches = await Match.findAll();
-    return allMatches;
   }
 
   static async insertMatch(body: INewMatch) {

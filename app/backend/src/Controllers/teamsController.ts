@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import httpStatus from '../handlers/httpStatus';
 import TeamsService from '../Services/teamsService';
-import Team from '../database/models/matchesModel';
+import Team from '../database/models/teamsModel';
 
 export default class TeamsController {
   static async getTeams(req: Request, res: Response) {
