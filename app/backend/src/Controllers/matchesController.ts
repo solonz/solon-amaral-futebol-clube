@@ -20,6 +20,6 @@ export default class matchesController {
   static async finishMatch(req: Request, res: Response) {
     const { id } = req.params;
     await MatchesService.finishMatch(id);
-    return res.status(httpStatus.success).json('Finished');
+    return res.status(httpStatus.success).json({ message: 'Finished' });
   }
 }
