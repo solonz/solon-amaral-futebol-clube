@@ -27,13 +27,9 @@ export default class MatchesService {
   }
 
   static async insertMatch(body: INewMatch) {
-    console.log(body);
-
     const newMatch = await Match.create({ ...body, inProgress: 'true' });
-    console.log(`isso aqui é void? -> ${newMatch.id}`);
 
     const createdMatch = await this.findMatchByPk(newMatch.id);
-    console.log(createdMatch);
 
     return createdMatch;
   }
@@ -41,5 +37,10 @@ export default class MatchesService {
   static async findMatchByPk(id: number) {
     const match = await Match.findByPk(id);
     return match;
+  }
+
+  static async finishMatch(id: string) {
+    const finishedMatch = await Match.update({ inProgress: 0 }, { where: { id } });
+    return finishedMatch;
   }
 }
