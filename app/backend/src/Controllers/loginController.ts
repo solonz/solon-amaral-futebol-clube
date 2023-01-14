@@ -29,6 +29,6 @@ export default class LoginController {
     if (!result.role) {
       return res.status(httpStatus.unauthorized).json({ message: 'Invalid token' });
     }
-    res.status(httpStatus.success).json({ role: result.role });
+    return res.status(httpStatus.success).json({ role: result.role });
   }
 }

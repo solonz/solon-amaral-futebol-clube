@@ -1,4 +1,4 @@
-import { INewMatch } from '../interfaces';
+import { IMatchUpdate, INewMatch } from '../interfaces';
 import Match from '../database/models/matchesModel';
 import Team from '../database/models/teamsModel';
 
@@ -17,7 +17,7 @@ export default class MatchesService {
     return Match.findAll({ include: teams });
   }
 
-  static async insertMatch(body: INewMatch) {
+  static async createMatch(body: INewMatch) {
     const { homeTeam, awayTeam } = body;
 
     const findHomeTeam = await Team.findOne({ where: { id: homeTeam } });
@@ -27,7 +27,7 @@ export default class MatchesService {
     if (!findHomeTeam || !findAwayTeam) {
       return {
         status: 404,
-        message: 'There is no team with such id!',
+        message: { message: 'There is no team with such id!' },
       };
     }
     const newMatch = await Match.create({ ...body, inProgress: 'true' });
@@ -35,7 +35,7 @@ export default class MatchesService {
     const createdMatch = await this.findMatchByPk(newMatch.id);
 
     return {
-      status: 200,
+      status: 201,
       message: createdMatch,
     };
   }
@@ -48,5 +48,24 @@ export default class MatchesService {
   static async finishMatch(id: string) {
     const finishedMatch = await Match.update({ inProgress: 0 }, { where: { id } });
     return finishedMatch;
+  }
+
+  static async updateOnGoingMatch(id: string, body: IMatchUpdate) {
+    const matchStatus = await Match.findOne({ where: { id } });
+    if (!matchStatus) {
+      return {
+        status: 400,
+        message: 'invalid match id',
+      };
+    }
+    Match
+      .update(
+        { homeTeamGoals: body.homeTeamGoals, awayTeamGoals: body.awayTeamGoals },
+        { where: { id } },
+      );
+    return {
+      status: 200,
+      message: 'Match up-to-date',
+    };
   }
 }

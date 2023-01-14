@@ -16,6 +16,6 @@ export default class TeamsController {
   static async getTeam(req: Request, res: Response) {
     const { id } = req.params;
     const teamByPk = await TeamsService.team(id);
-    res.status(httpStatus.success).json(teamByPk);
+    return res.status(httpStatus.success).json(teamByPk);
   }
 }

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import httpStatus from '../handlers/httpStatus';
 import MatchesService from '../Services/matchesService';
+import JWT from '../helpers/jwt';
 
 export default class matchesController {
   static async allMatches(req: Request, res: Response) {
@@ -14,17 +15,32 @@ export default class matchesController {
   static async createMatch(req: Request, res: Response) {
     const matchData = req.body;
     const { homeTeam, awayTeam } = matchData;
+    const { authorization } = req.headers;
+    if (!authorization) {
+      return res.status(httpStatus.badRequest).json({ message: 'Missing token' });
+    }
     if (homeTeam === awayTeam) {
-      return res.status(httpStatus.notFound)
+      return res.status(httpStatus.unprocessableEntity)
         .json({ message: 'It is not possible to create a match with two equal teams' });
     }
-    const createdMatch = await MatchesService.insertMatch(matchData);
-    return res.status(createdMatch.status).json({ message: createdMatch.message });
+    const validate = JWT.validateToken(authorization);
+    if (validate instanceof Error) {
+      return res.status(httpStatus.unauthorized).json({ message: 'Token must be a valid token' });
+    }
+    const createdMatch = await MatchesService.createMatch(matchData);
+    return res.status(createdMatch.status).json(createdMatch.message);
   }
 
   static async finishMatch(req: Request, res: Response) {
     const { id } = req.params;
     await MatchesService.finishMatch(id);
     return res.status(httpStatus.success).json({ message: 'Finished' });
+  }
+
+  static async updateOnGoingMatch(req: Request, res: Response) {
+    const { id } = req.params;
+    const { body } = req;
+    const update = await MatchesService.updateOnGoingMatch(id, body);
+    return res.status(update.status).json(update.message);
   }
 }
