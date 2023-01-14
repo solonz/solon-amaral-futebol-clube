@@ -13,23 +13,30 @@ export default class matchesController {
   }
 
   static async createMatch(req: Request, res: Response) {
-    const matchData = req.body;
-    const { homeTeam, awayTeam } = matchData;
+    const { homeTeam, awayTeam } = req.body;
+    console.log(homeTeam);
+    console.log(awayTeam);
+
     const { authorization } = req.headers;
     if (!authorization) {
       return res.status(httpStatus.badRequest).json({ message: 'Missing token' });
     }
     if (homeTeam === awayTeam) {
+      console.log('times iguais');
+
       return res.status(httpStatus.unprocessableEntity)
         .json({ message: 'It is not possible to create a match with two equal teams' });
     }
-    const validate = JWT.validateToken(authorization);
-    if (validate instanceof Error) {
+    const validate = await JWT.validateToken(authorization);
+    if (validate === 'Expired or invalid token') {
       return res.status(httpStatus.unauthorized).json({ message: 'Token must be a valid token' });
     }
-    const createdMatch = await MatchesService.createMatch(matchData);
+    const createdMatch = await MatchesService.createMatch(req.body);
+    // if (createdMatch.status === 404) {
     return res.status(createdMatch.status).json(createdMatch.message);
   }
+  //     return res.status(createdMatch.status).json(createdMatch.message);
+  //   }
 
   static async finishMatch(req: Request, res: Response) {
     const { id } = req.params;

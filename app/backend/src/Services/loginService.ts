@@ -15,17 +15,14 @@ export default class LoginService {
     if (!bcrypt.compareSync(password, userData.password)) return;
 
     const token = await JWT.generateToken(email);
-    console.log('token gerado');
     return { token };
   }
 
   static async validateToken(authorization: string) {
     const hasAuthorization = JWT.validateToken(authorization);
-    console.log(hasAuthorization);
 
     if (!hasAuthorization) return { role: undefined };
     const user = await Users.findOne({ where: { email: hasAuthorization } });
-    console.log(user);
 
     return { role: user?.role };
   }

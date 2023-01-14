@@ -22,7 +22,6 @@ export default class MatchesService {
 
     const findHomeTeam = await Team.findOne({ where: { id: homeTeam } });
     const findAwayTeam = await Team.findOne({ where: { id: awayTeam } });
-    console.log(findAwayTeam);
 
     if (!findHomeTeam || !findAwayTeam) {
       return {

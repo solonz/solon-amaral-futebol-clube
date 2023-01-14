@@ -9,7 +9,8 @@ export default class JWT {
     try {
       return jwt.verify(authorization, process.env.JWT_SECRET as string) as jwt.JwtPayload;
     } catch (error) {
-      throw new Error('Expired or invalid token');
+      return ('Expired or invalid token');
+      // throw new Error('Expired or invalid token');
     }
   }
 }
