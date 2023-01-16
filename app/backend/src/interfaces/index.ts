@@ -5,7 +5,6 @@ interface ILogin {
 interface IToken {
   token?: string,
 }
-
 interface IUser extends ILogin{
   id: number,
   username: string,
@@ -23,4 +22,26 @@ interface IMatchUpdate {
   awayTeamGoals: number,
 }
 
-export { ILogin, IToken, IUser, INewMatch, IMatchUpdate };
+interface ILeaderboard {
+  name: string,
+  totalPoints: number,
+  totalGames: number,
+  totalVictories: number,
+  totalDraws: number,
+  totalLosses: number,
+  goalsFavor: number,
+  goalsOwn: number,
+  goalsBalance: number,
+  efficiency: number,
+}
+
+interface IMatch {
+  id: number;
+  homeTeam: number;
+  homeTeamGoals: number;
+  awayTeam: number;
+  awayTeamGoals: number;
+  inProgress: boolean;
+}
+
+export { ILogin, IToken, IUser, INewMatch, IMatchUpdate, ILeaderboard, IMatch };

@@ -3,7 +3,7 @@ import Match from '../database/models/matchesModel';
 import Team from '../database/models/teamsModel';
 
 export default class MatchesService {
-  static async allMatches(inProgress: string | undefined) {
+  static async allMatches(inProgress?: string | undefined) {
     const teams = [
       { model: Team, attributes: ['teamName'], as: 'teamHome' },
       { model: Team, attributes: ['teamName'], as: 'teamAway' },
@@ -47,6 +47,11 @@ export default class MatchesService {
   static async finishMatch(id: string) {
     const finishedMatch = await Match.update({ inProgress: 0 }, { where: { id } });
     return finishedMatch;
+  }
+
+  static async finishedMatches() {
+    const finished = Match.findAll({ where: { inProgress: 'false' } });
+    return finished;
   }
 
   static async updateOnGoingMatch(id: string, body: IMatchUpdate) {

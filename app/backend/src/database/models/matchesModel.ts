@@ -1,14 +1,14 @@
-import { Model, INTEGER, BOOLEAN, IntegerDataType } from 'sequelize';
+import { Model, INTEGER, BOOLEAN } from 'sequelize';
 import db from '.';
 import Team from './teamsModel';
 // import OtherModel from './OtherModel';
 
 class Match extends Model {
   declare id: number;
-  declare homeTeam: IntegerDataType;
-  declare homeTeamGoals: IntegerDataType;
-  declare awayTeam: IntegerDataType;
-  declare awayTeamGoals: IntegerDataType;
+  declare homeTeam: number;
+  declare homeTeamGoals: number;
+  declare awayTeam: number;
+  declare awayTeamGoals: number;
   declare inProgress: boolean;
 }
 
