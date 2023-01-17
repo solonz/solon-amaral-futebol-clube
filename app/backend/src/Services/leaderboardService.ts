@@ -27,7 +27,33 @@ export default class LeaderboardService {
 
   static finalBoard(board: ILeaderboard[]) {
     const result = [...new Set(board.map((a) => JSON.stringify(a)))].map((a) => JSON.parse(a));
-    console.log(result);
     return result;
+  }
+
+  static eficiencia(team: ILeaderboard, away: ILeaderboard) {
+    const totalPoints = team.totalPoints + away.totalPoints;
+    const totalGames = team.totalGames + away.totalGames;
+    return Number(((totalPoints / (totalGames * 3)) * 100).toFixed(2));
+  }
+
+  static async buildAllLeaderboard(allMatches: IMatch[]) {
+    const homeClassificacao = await this.buildLeaderboard(allMatches, 'home');
+    const awayClassificacao = await this.buildLeaderboard(allMatches, 'away');
+    const classifica = homeClassificacao.map((team) => {
+      const away = awayClassificacao.find((time) => time.name === team.name);
+      return {
+        name: team.name,
+        totalPoints: team.totalPoints + away.totalPoints,
+        totalGames: team.totalGames + away.totalGames,
+        totalVictories: team.totalVictories + away.totalVictories,
+        totalDraws: team.totalDraws + away.totalDraws,
+        totalLosses: team.totalLosses + away.totalLosses,
+        goalsFavor: team.goalsFavor + away.goalsFavor,
+        goalsOwn: team.goalsOwn + away.goalsOwn,
+        goalsBalance: team.goalsBalance + away.goalsBalance,
+        efficiency: this.eficiencia(team, away),
+      };
+    });
+    return this.finalBoard(classifica);
   }
 }

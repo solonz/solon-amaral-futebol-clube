@@ -19,4 +19,12 @@ export default class LeaderboardController {
     || b.goalsFavor - a.goalsFavor || a.goalsOwn - b.goalsOwn);
     return res.status(httpStatus.success).json(data);
   }
+
+  static async allLeaderboard(_req: Request, res: Response): Promise<Response> {
+    const matches = await MatchesService.allMatches();
+    const data = await LeaderboardService.buildAllLeaderboard(matches);
+    data.sort((a, b) => b.totalPoints - a.totalPoints || b.goalsBalance - a.goalsBalance
+    || b.goalsFavor - a.goalsFavor || a.goalsOwn - b.goalsOwn);
+    return res.status(httpStatus.success).json(data);
+  }
 }

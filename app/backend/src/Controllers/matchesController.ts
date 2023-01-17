@@ -14,8 +14,6 @@ export default class matchesController {
 
   static async createMatch(req: Request, res: Response) {
     const { homeTeam, awayTeam } = req.body;
-    console.log(homeTeam);
-    console.log(awayTeam);
 
     const { authorization } = req.headers;
     if (!authorization) {
@@ -32,11 +30,8 @@ export default class matchesController {
       return res.status(httpStatus.unauthorized).json({ message: 'Token must be a valid token' });
     }
     const createdMatch = await MatchesService.createMatch(req.body);
-    // if (createdMatch.status === 404) {
     return res.status(createdMatch.status).json(createdMatch.message);
   }
-  //     return res.status(createdMatch.status).json(createdMatch.message);
-  //   }
 
   static async finishMatch(req: Request, res: Response) {
     const { id } = req.params;
