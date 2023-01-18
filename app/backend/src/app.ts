@@ -1,9 +1,9 @@
 import * as express from 'express';
-import router from './Routes';
-// import leaderboardRoutes from './Routes/leaderboardRoutes';
-// import loginRoutes from './Routes/loginRoutes';
-// import matchesRoutes from './Routes/matchesRoutes';
-// import teamsRoutes from './Routes/teamsRoutes';
+// import router from './Routes';
+import leaderboardRoutes from './Routes/leaderboardRoutes';
+import loginRoutes from './Routes/loginRoutes';
+import matchesRoutes from './Routes/matchesRoutes';
+import teamsRoutes from './Routes/teamsRoutes';
 
 class App {
   public app: express.Express;
@@ -15,11 +15,6 @@ class App {
 
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
-    this.app.use(router);
-    // this.app.use('/login', loginRoutes);
-    // this.app.use('/teams', teamsRoutes);
-    // this.app.use('/matches', matchesRoutes);
-    // this.app.use('/leaderboard', leaderboardRoutes);
   }
 
   private config():void {
@@ -32,6 +27,11 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
+    this.app.use('/login', loginRoutes);
+    this.app.use('/teams', teamsRoutes);
+    this.app.use('/matches', matchesRoutes);
+    this.app.use('/leaderboard', leaderboardRoutes);
+    // this.app.use(router);
   }
 
   public start(PORT: string | number):void {

@@ -19,7 +19,7 @@ export default class LeaderboardController {
   }
 
   static async awayLeaderboard(_req: Request, res: Response): Promise<Response> {
-    const matches = await MatchesService.allMatches();
+    const matches = await MatchesService.allMatches('false');
     const data = await LeaderboardService.buildLeaderboard(matches, 'away');
     data.sort((a, b) => b.totalPoints - a.totalPoints || b.goalsBalance - a.goalsBalance
     || b.goalsFavor - a.goalsFavor || a.goalsOwn - b.goalsOwn);
@@ -27,7 +27,7 @@ export default class LeaderboardController {
   }
 
   static async allLeaderboard(_req: Request, res: Response): Promise<Response> {
-    const matches = await MatchesService.allMatches();
+    const matches = await MatchesService.allMatches('false');
     const data = await LeaderboardService.buildAllLeaderboard(matches);
     data.sort((a, b) => b.totalPoints - a.totalPoints || b.goalsBalance - a.goalsBalance
     || b.goalsFavor - a.goalsFavor || a.goalsOwn - b.goalsOwn);
