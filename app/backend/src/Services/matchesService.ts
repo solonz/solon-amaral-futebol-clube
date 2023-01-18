@@ -62,11 +62,13 @@ export default class MatchesService {
         message: 'invalid match id',
       };
     }
-    Match
-      .update(
-        { homeTeamGoals: body.homeTeamGoals, awayTeamGoals: body.awayTeamGoals },
-        { where: { id } },
-      );
+    if (!matchStatus.inProgress) {
+      return { status: 400, message: 'match already finished' };
+    }
+    Match.update(
+      { homeTeamGoals: body.homeTeamGoals, awayTeamGoals: body.awayTeamGoals },
+      { where: { id } },
+    );
     return {
       status: 200,
       message: 'Match up-to-date',
