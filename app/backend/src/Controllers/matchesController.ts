@@ -20,8 +20,6 @@ export default class matchesController {
       return res.status(httpStatus.badRequest).json({ message: 'Missing token' });
     }
     if (homeTeam === awayTeam) {
-      console.log('times iguais');
-
       return res.status(httpStatus.unprocessableEntity)
         .json({ message: 'It is not possible to create a match with two equal teams' });
     }

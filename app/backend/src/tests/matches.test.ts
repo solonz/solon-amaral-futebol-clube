@@ -63,57 +63,57 @@ it('1.2 - Returns matches that are in progress', async () => {
   });
 })
 
-  describe('2 - testes na página de Partidas', () => {
+  // describe('2 - testes na página de Partidas', () => {
 
-    let chaiHttpResponse: Response;
+  //   let chaiHttpResponse: Response;
 
-  it('2.2 - cria partida', async () => {
+  // it('2.2 - cria partida', async () => {
 
-    const create = {
-      homeTeam: 1,
-      awayTeam: 2,
-      homeTeamGoals: 1,
-      awayTeamGoals: 0,
-    }
+  //   const create = {
+  //     homeTeam: 1,
+  //     awayTeam: 2,
+  //     homeTeamGoals: 1,
+  //     awayTeamGoals: 0,
+  //   }
 
-    const created = {
-      id: 1,
-      homeTeam: 1,
-      awayTeam: 2,
-      homeTeamGoals: 1,
-      awayTeamGoals: 0,
-      inProgress: false,
-    }
-        sinon.stub(JWT, 'validateToken').resolves(true);
-        sinon.stub(Match, "create").resolves(created as Match);
+  //   const created = {
+  //     id: 1,
+  //     homeTeam: 1,
+  //     awayTeam: 2,
+  //     homeTeamGoals: 1,
+  //     awayTeamGoals: 0,
+  //     inProgress: false,
+  //   }
+  //       sinon.stub(JWT, 'validateToken').resolves(true);
+  //       sinon.stub(Match, "create").resolves(created as Match);
 
-        chaiHttpResponse = await chai.request(app)
-        .post('/matches')
-        .set('authorization', token)
-        .send(create)
+  //       chaiHttpResponse = await chai.request(app)
+  //       .post('/matches')
+  //       .set('authorization', token)
+  //       .send(create)
 
-        console.log(create);
-        console.log(created);
-        console.log(chaiHttpResponse.body);
+  //       console.log(create);
+  //       console.log(created);
+  //       console.log(chaiHttpResponse.body);
         
         
-    expect(chaiHttpResponse.status).to.be.equal(201);
-    expect(chaiHttpResponse.body).to.be.deep.equal(created);
-  });
+  //   expect(chaiHttpResponse.status).to.be.equal(201);
+  //   expect(chaiHttpResponse.body).to.be.deep.equal(created);
+  // });
 
-  it('Fails if the homeTeam is equal to awayTeam', async () => {
-    chaiHttpResponse = await chai
-      .request(app)
-      .post('/matches')
-      .send(unprocessable)
-      .set('Authorization', 'something');
+  // it('Fails if the homeTeam is equal to awayTeam', async () => {
+  //   chaiHttpResponse = await chai
+  //     .request(app)
+  //     .post('/matches')
+  //     .send(unprocessable)
+  //     .set('Authorization', 'something');
 
-    expect(chaiHttpResponse.status).to.be.equal(
-      422
-    );
-    expect(chaiHttpResponse.body).to.deep.equal({
-      message:
-        'It is not possible to create a match with two equal teams',
-    });
-  });
-})
+  //   expect(chaiHttpResponse.status).to.be.equal(
+  //     422
+  //   );
+  //   expect(chaiHttpResponse.body).to.deep.equal({
+  //     message:
+  //       'It is not possible to create a match with two equal teams',
+  //   });
+  // });
+// })

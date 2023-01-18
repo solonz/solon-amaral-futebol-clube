@@ -1,7 +1,7 @@
-import { ILeaderboard, IMatch } from '../interfaces';
+import { IMatch } from '../interfaces';
 import TeamsService from '../Services/teamsService';
 import MatchesService from '../Services/matchesService';
-import LeaderboardService from '../Services/leaderboardService';
+// import LeaderboardService from '../Services/leaderboardService';
 
 export default class LeaderboardFunctions {
   static async namme(match: IMatch, homeOrAway: string): Promise <undefined | string> {
@@ -127,12 +127,12 @@ export default class LeaderboardFunctions {
     return balance;
   }
 
-  static async efficiency(match: IMatch, homeOrAway: string): Promise<number> {
+  static async efficiency(match: IMatch, homeOrAway: string): Promise<string> {
     const points = await this.totalPoints(match, homeOrAway);
     const gamesData = await this.totalGames(match, homeOrAway);
     const games = gamesData.length;
     // https://javascript.info/number#:~:text=The%20method%20toFixed(n)%20rounds,string%20representation%20of%20the%20result.&text=We%20can%20convert%20it%20to,toFixed(5)%20.
-    return Number(((points / (games * 3)) * 100).toFixed(2));
+    return ((points / (games * 3)) * 100).toFixed(2);
   }
 
   static async finishedMatches() {
@@ -140,8 +140,8 @@ export default class LeaderboardFunctions {
     return allFinishedMatches;
   }
 
-  static async getClassification(homeOrAway: string): Promise<ILeaderboard[]> {
-    const matchesFinished = await this.finishedMatches();
-    return LeaderboardService.buildLeaderboard(matchesFinished, homeOrAway);
-  }
+  // static async getClassification(homeOrAway: string): Promise<ILeaderboard[]> {
+  //   const matchesFinished = await this.finishedMatches();
+  //   return LeaderboardService.buildLeaderboard(matchesFinished, homeOrAway);
+  // }
 }
