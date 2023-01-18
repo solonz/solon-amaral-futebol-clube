@@ -4,8 +4,6 @@ import Team from '../database/models/teamsModel';
 
 export default class MatchesService {
   static async allMatches(inProgress?: string | undefined) {
-    console.log('CHAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-
     const teams = [
       { model: Team, attributes: ['teamName'], as: 'teamHome' },
       { model: Team, attributes: ['teamName'], as: 'teamAway' },
@@ -68,8 +66,6 @@ export default class MatchesService {
     if (!matchStatus.inProgress) {
       return { status: 400, message: 'match already finished' };
     }
-    console.log(body);
-
     await Match.update(
       { homeTeamGoals: Number(body.homeTeamGoals), awayTeamGoals: Number(body.awayTeamGoals) },
       { where: { id } },
