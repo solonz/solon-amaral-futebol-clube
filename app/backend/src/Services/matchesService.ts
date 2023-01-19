@@ -1,20 +1,21 @@
-import { IMatchUpdate, INewMatch } from '../interfaces';
+import { IMatch, IMatchUpdate, INewMatch } from '../interfaces';
 import Match from '../database/models/matchesModel';
 import Team from '../database/models/teamsModel';
 
 export default class MatchesService {
-  static async allMatches(inProgress?: string | undefined) {
+  static async allMatches(inProgress?: string | undefined): Promise<IMatch[]> {
     const teams = [
       { model: Team, attributes: ['teamName'], as: 'teamHome' },
       { model: Team, attributes: ['teamName'], as: 'teamAway' },
     ];
-    if (inProgress === 'true') {
-      return Match.findAll({ include: teams, where: { inProgress: inProgress === 'true' } });
+    if (inProgress) {
+      return await Match
+        .findAll({
+          include: teams,
+          where: { inProgress: inProgress === 'true' },
+        }) as unknown as IMatch[];
     }
-    if (inProgress === 'false') {
-      return Match.findAll({ include: teams, where: { inProgress: 0 } });
-    }
-    return Match.findAll({ include: teams });
+    return await Match.findAll({ include: teams }) as unknown as IMatch[];
   }
 
   static async createMatch(body: INewMatch) {
@@ -49,7 +50,7 @@ export default class MatchesService {
     return finishedMatch;
   }
 
-  static async finishedMatches() {
+  static async finishedMatches(): Promise<Omit<IMatch, 'teamHome' | 'teamAway'>[]> {
     const finished = Match.findAll({ where: { inProgress: 'false' } });
     return finished;
   }

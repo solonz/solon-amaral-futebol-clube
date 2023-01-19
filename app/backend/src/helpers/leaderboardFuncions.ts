@@ -1,22 +1,13 @@
 import { IMatch } from '../interfaces';
-import TeamsService from '../Services/teamsService';
-import MatchesService from '../Services/matchesService';
-// import LeaderboardService from '../Services/leaderboardService';
 
 export default class LeaderboardFunctions {
-  static async namme(match: IMatch, homeOrAway: string): Promise <undefined | string> {
-    const { homeTeam, awayTeam } = match;
-    const teams = await TeamsService.team(
-      (homeOrAway !== 'home') ? awayTeam : homeTeam,
-    );
-
-    return teams?.teamName;
+  static namme(match: IMatch, homeOrAway: string): string {
+    const { teamHome, teamAway } = match;
+    return (homeOrAway === 'home') ? teamHome.teamName : teamAway.teamName;
   }
 
-  static async totalGames(match: IMatch, homeOrAway: string): Promise<IMatch[]> {
-    const partidas = await MatchesService.finishedMatches();
-
-    const result = partidas.filter((matche) => {
+  static totalGames(match: IMatch, homeOrAway: string, allMatches: IMatch[]): IMatch[] {
+    const result = allMatches.filter((matche) => {
       if (homeOrAway === 'home') {
         return matche.homeTeam === match.homeTeam;
       }
@@ -25,8 +16,8 @@ export default class LeaderboardFunctions {
     return result;
   }
 
-  static async totalHomePoints(match: IMatch, homeOrAway: string): Promise<number> {
-    const game = await this.totalGames(match, homeOrAway);
+  static totalHomePoints(match: IMatch, homeOrAway: string, allMatches: IMatch[]): number {
+    const game = this.totalGames(match, homeOrAway, allMatches);
     let homePoints = 0;
     game.forEach((matche) => {
       if (matche.homeTeamGoals > matche.awayTeamGoals) {
@@ -39,8 +30,8 @@ export default class LeaderboardFunctions {
     return homePoints;
   }
 
-  static async totalAwayPoints(match: IMatch, homeOrAway: string): Promise<number> {
-    const game = await this.totalGames(match, homeOrAway);
+  static totalAwayPoints(match: IMatch, homeOrAway: string, allMatches: IMatch[]): number {
+    const game = this.totalGames(match, homeOrAway, allMatches);
     let awayPoints = 0;
     game.forEach((matche) => {
       if (matche.homeTeamGoals < matche.awayTeamGoals) {
@@ -53,45 +44,45 @@ export default class LeaderboardFunctions {
     return awayPoints;
   }
 
-  static async totalPoints(match: IMatch, homeOrAway: string): Promise<number> {
-    const totalHomePoint = await this.totalHomePoints(match, homeOrAway);
-    const totalAwayPoint = await this.totalAwayPoints(match, homeOrAway);
+  static totalPoints(match: IMatch, homeOrAway: string, allMatches: IMatch[]): number {
+    const totalHomePoint = this.totalHomePoints(match, homeOrAway, allMatches);
+    const totalAwayPoint = this.totalAwayPoints(match, homeOrAway, allMatches);
     if (homeOrAway === 'home') {
       return totalHomePoint;
     }
     return totalAwayPoint;
   }
 
-  static async totalVictories(match: IMatch, homeOrAway: string): Promise<number | unknown> {
-    const partidas = await this.totalGames(match, homeOrAway);
+  static totalVictories(match: IMatch, homeOrAway: string, allMatches: IMatch[]): number {
+    const partidas = this.totalGames(match, homeOrAway, allMatches);
     if (homeOrAway === 'home') {
-      return (await partidas)
+      return (partidas)
         .filter((matches) => matches.homeTeamGoals > matches.awayTeamGoals).length;
     }
-    return (await partidas)
+    return (partidas)
       .filter((matches) => matches.homeTeamGoals < matches.awayTeamGoals).length;
   }
 
-  static async totalDraws(match: IMatch, homeOrAway: string): Promise<number> {
-    const partidas = await this.totalGames(match, homeOrAway);
-    return (await partidas)
+  static totalDraws(match: IMatch, homeOrAway: string, allMatches: IMatch[]): number {
+    const partidas = this.totalGames(match, homeOrAway, allMatches);
+    return (partidas)
       .filter((matches) => matches.homeTeamGoals === matches.awayTeamGoals).length;
   }
 
-  static async totalLosses(match: IMatch, homeOrAway: string): Promise<number> {
-    const partidas = await this.totalGames(match, homeOrAway);
+  static totalLosses(match: IMatch, homeOrAway: string, allMatches: IMatch[]): number {
+    const partidas = this.totalGames(match, homeOrAway, allMatches);
     if (homeOrAway === 'home') {
-      return (await partidas)
+      return (partidas)
         .filter((matches) => matches.homeTeamGoals < matches.awayTeamGoals).length;
     }
-    return (await partidas)
+    return (partidas)
       .filter((matches) => matches.homeTeamGoals > matches.awayTeamGoals).length;
   }
 
-  static async goalsFavor(match: IMatch, homeOrAway: string): Promise<number> {
+  static goalsFavor(match: IMatch, homeOrAway: string, allMatches: IMatch[]): number {
     let goals = 0;
     let goalsAway = 0;
-    const partidas = await this.totalGames(match, homeOrAway);
+    const partidas = this.totalGames(match, homeOrAway, allMatches);
     partidas.forEach((partida) => {
       if (homeOrAway === 'home') {
         goals += partida.homeTeamGoals;
@@ -104,10 +95,10 @@ export default class LeaderboardFunctions {
     return goalsAway;
   }
 
-  static async goalsOwn(match: IMatch, homeOrAway: string) {
+  static goalsOwn(match: IMatch, homeOrAway: string, allMatches: IMatch[]) {
     let goals = 0;
     let goalsAway = 0;
-    const partidas = await this.totalGames(match, homeOrAway);
+    const partidas = this.totalGames(match, homeOrAway, allMatches);
     partidas.forEach((partida) => {
       if (homeOrAway === 'home') {
         goals += partida.awayTeamGoals;
@@ -120,28 +111,18 @@ export default class LeaderboardFunctions {
     return goalsAway;
   }
 
-  static async goalsBalance(match: IMatch, homeOrAway: string): Promise<number> {
-    const goalsFavor = await this.goalsFavor(match, homeOrAway);
-    const goalsOwn = await this.goalsOwn(match, homeOrAway);
+  static goalsBalance(match: IMatch, homeOrAway: string, allMatches: IMatch[]): number {
+    const goalsFavor = this.goalsFavor(match, homeOrAway, allMatches);
+    const goalsOwn = this.goalsOwn(match, homeOrAway, allMatches);
     const balance = goalsFavor - goalsOwn;
     return balance;
   }
 
-  static async efficiency(match: IMatch, homeOrAway: string): Promise<string> {
-    const points = await this.totalPoints(match, homeOrAway);
-    const gamesData = await this.totalGames(match, homeOrAway);
+  static efficiency(match: IMatch, homeOrAway: string, allMatches: IMatch[]): string {
+    const points = this.totalPoints(match, homeOrAway, allMatches);
+    const gamesData = this.totalGames(match, homeOrAway, allMatches);
     const games = gamesData.length;
     // https://javascript.info/number#:~:text=The%20method%20toFixed(n)%20rounds,string%20representation%20of%20the%20result.&text=We%20can%20convert%20it%20to,toFixed(5)%20.
     return ((points / (games * 3)) * 100).toFixed(2);
   }
-
-  static async finishedMatches() {
-    const allFinishedMatches = MatchesService.finishedMatches();
-    return allFinishedMatches;
-  }
-
-  // static async getClassification(homeOrAway: string): Promise<ILeaderboard[]> {
-  //   const matchesFinished = await this.finishedMatches();
-  //   return LeaderboardService.buildLeaderboard(matchesFinished, homeOrAway);
-  // }
 }

@@ -42,6 +42,12 @@ interface IMatch {
   awayTeam: number;
   awayTeamGoals: number;
   inProgress: boolean;
+  teamHome: {
+    teamName: string
+  },
+  teamAway: {
+    teamName: string
+  }
 }
 
 export { ILogin, IToken, IUser, INewMatch, IMatchUpdate, ILeaderboard, IMatch };

@@ -5,16 +5,11 @@ import MatchesService from '../Services/matchesService';
 
 export default class LeaderboardController {
   static async homeLeaderboard(_req: Request, res: Response): Promise<Response> {
-    console.log('CHAMA A FUNÇÃO CLASSIFICAÇÃO HOME');
-    const matches = await MatchesService.allMatches();
+    const matches = await MatchesService.allMatches('false');
     const data = await LeaderboardService.buildLeaderboard(matches, 'home');
-    console.log('TUDO QUANTO É PARTIDA', data);
-
     const result = data.sort((a, b) => b.totalPoints - a.totalPoints
     || b.goalsBalance - a.goalsBalance
     || b.goalsFavor - a.goalsFavor || a.goalsOwn - b.goalsOwn);
-    console.log('PARTIDAS ORDENADAS', result);
-
     return res.status(httpStatus.success).json(result);
   }
 
